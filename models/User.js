@@ -1,54 +1,82 @@
 const { Schema, model, models } = require('mongoose')
 const validate = require('mongoose-validator')
-const { hash } = require('bcryptjs')
+const { hash, compare } = require('bcryptjs')
 
 const userSchema = new Schema({
   name: {
     type: String,
+    validate: {
+      validator(val) {
+        return /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*)*$/.test(val)
+      },
+      msg: 'Invalid name format',
+    },
   },
   email: {
     type: String,
-    required: true,
     validate: [
       validate({ validator: 'isEmail', message: 'Invalid email format' }),
       {
         async validator(val) {
           const user = await models.User.findOne({ email: val })
-          if (user) return true
-          return false
+          if (user && user.id != this.id) return false
+          return true
         },
         msg: 'Email already registered',
       },
     ],
   },
-  password: {
+  pin: {
     type: String,
     required: true,
-    minlength: 6,
+    validate: [
+      // validate({
+      //   validator: 'isNumeric',
+      //   arguments: { no_symbols: true },
+      //   message: 'pin can only contain number',
+      // }),
+      // validate({
+      //   validator: 'isLength',
+      //   arguments: [6, 6],
+      //   message: 'pin must have 6 length',
+      // }),
+      {
+        async validator(val) {
+          if (this.pin && this.pin == val) return true
+          return /^[0-9]{6}$/.test(val)
+        },
+      },
+    ],
   },
   phone_number: {
     type: String,
+    required: true,
     validate: [
       validate({
         validator: 'isMobilePhone',
         arguments: 'id-ID',
         message: 'Invalid phone number format',
       }),
+      {
+        async validator(val) {
+          const user = await models.User.findOne({ phone_number: val })
+          if (user && user.id != this.id) return false
+          return true
+        },
+        msg: 'phone number already registered',
+      },
     ],
   },
-  address: {
-    type: String,
-    validate: [validate({ validator: 'isURL' })],
-  },
+  address: String,
   photo_url: {
     type: String,
     validate: [validate({ validator: 'isURL' })],
   },
-  ktp_url: {
+  id_url: {
     type: String,
     validate: [validate({ validator: 'isURL' })],
   },
-  slip_gaji_url: {
+  salary_slip_url: {
     type: String,
     validate: [validate({ validator: 'isURL' })],
   },
@@ -56,8 +84,8 @@ const userSchema = new Schema({
   salary: Number,
 })
 
-userSchema.pre('save', async next => {
-  this.password = await hash(this.password, 10)
+userSchema.pre('save', async function(next) {
+  if (/^[0-9]{6}$/.test(this.pin)) this.pin = await hash(this.pin, 10)
   next()
 })
 
