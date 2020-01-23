@@ -1,4 +1,6 @@
 const { User } = require('../models')
+const { compare } = require('bcryptjs')
+const createError = require('http-errors')
 
 class UserController {
   static async createUser(req, res, next) {
@@ -44,7 +46,7 @@ class UserController {
       //   }
       // )
       let user = req.user
-      
+
       user.name = name || user.name
       user.email = email || user.email
       user.address = address || user.address
@@ -62,9 +64,33 @@ class UserController {
     }
   }
 
-  static async updateUserPhoneNumber(req, res, next) {}
+  static async updateUserPhoneNumber(req, res, next) {
+    try {
+      const { phone_number } = req.body
+      let user = req.user
+
+      user.phone_number = phone_number
+
+      user = await user.save()
+      res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
 
   static async updateUserPin(req, res, next) {}
+
+  static async signInUser(req, res, next) {
+    try {
+      const { phone_number, pin } = req.body
+      const user = await User.findOne({ phone_number })
+      if (user && (await compare(pin, user.pin))) {
+        res.status(200).json(user)
+      } else throw createError(422, 'Wrong phone_number/pin')
+    } catch (error) {
+      next(error)
+    }
+  }
 
   static async getAllUser(req, res, next) {
     try {
