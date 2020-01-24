@@ -1,8 +1,8 @@
 const { Schema, model } = require('mongoose')
 
-const applicationSchema = new Schema(
+const decisionSchema = new Schema(
   {
-    user_id: {
+    application_id: {
       type: Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -16,18 +16,23 @@ const applicationSchema = new Schema(
       type: Number,
       required: true,
     },
-    objective: {
-      type: String,
+    interest_rate: {
+      type: Number,
+      required: true,
+    },
+    loan_term: {
+      type: Number,
       required: true,
     },
     additional_data: Object,
-    decisions: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Decision',
-      required: true
-    }]
+    status: {
+      type: String,
+      required: true,
+      enum: ['pending', 'accepted', 'rejected'],
+      default: 'pending'
+    },
   },
   { timestamps: true }
 )
 
-module.exports = model('Application', applicationSchema)
+module.exports = model('Decision', decisionSchema)

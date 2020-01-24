@@ -20,25 +20,59 @@ class ApplicationController {
     }
   }
 
-  static async updateApplicationStatus(req, res, next) {
+  // Mungkin aplikasi dibuat tidak bisa diupdate
+
+  // static async updateApplicationStatus(req, res, next) {
+  //   try {
+  //     const { status } = req.body
+  //     let application = req.application
+
+  //     application.status = status || application.status
+
+  //     application = await application.save()
+  //     res.status(200).json(application)
+  //   } catch (error) {
+  //     next(error)
+  //   }
+  // }
+
+  static async getAllApplications(req, res, next) {
     try {
-      const { status } = req.body
-      let application = req.application
+      const application = await Application.find()
 
-      application.status = status || application.status
-
-      application = await application.save()
       res.status(200).json(application)
     } catch (error) {
       next(error)
     }
   }
 
-  static async getAllApplications(req, res, next) {}
+  static async getAllFintechApplications(req, res, next) {
+    const fintechId = req.params.id
 
-  static async getAllFintechApplications(req, res, next) {}
+    try {
+      const application = await Application.find({
+        fintech_id: fintechId
+      })
 
-  static async getAllUserApplications(req, res, next) {}
+      res.status(200).json(application)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async getAllUserApplications(req, res, next) {
+    const userId = req.params.id
+
+    try {
+      const application = await Application.find({
+        user_id: userId
+      })
+
+      res.status(200).json(application)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = ApplicationController

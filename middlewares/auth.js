@@ -34,4 +34,16 @@ module.exports = {
       next(error)
     }
   },
+  async authorizeApplication(req, res, next) {
+    try {
+      const fintech = await Fintech.findById(req.params.id)
+      if (!fintech) throw createError(404, 'fintech not found')
+      if (fintech) {
+        req.fintech = fintech
+        next()
+      } else throw createError(403, 'Unauthorized access to item')
+    } catch (error) {
+      next(error)
+    }
+  },
 }

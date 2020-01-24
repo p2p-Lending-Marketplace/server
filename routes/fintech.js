@@ -1,5 +1,5 @@
 const fintech = require('express').Router()
-const { FintechController } = require('../controllers')
+const { Controller } = require('../controllers')
 const { authorizeFintech } = require('../middlewares/auth')
 
 fintech.get('/', FintechController.getAllFinteches)
