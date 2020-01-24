@@ -1,8 +1,11 @@
+process.env.NODE_ENV === 'development' && require('dotenv').config()
+
 const cors = require('cors')
 const express = require('express')
 const app = express()
 
 require('./config/mongoose')
+require('./jobs/otp')
 
 app.use(cors())
 app.use(express.json())

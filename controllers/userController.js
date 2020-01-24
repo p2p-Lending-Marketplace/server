@@ -1,8 +1,38 @@
 const { User } = require('../models')
 const { compare } = require('bcryptjs')
 const createError = require('http-errors')
+const { authenticator } = require('otplib')
+const Bull = require('bull')
+const otpQueue = new Bull('otp-queue')
 
 class UserController {
+  static async requestOTP(req, res, next) {
+    try {
+      const secret = process.env.OTP_SECRET
+      const token = authenticator.generate(secret)
+
+      const phoneNumber = req.body.phoneNumber
+
+      otpQueue.add({ phoneNumber, token })
+
+      res.status(204).json()
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async verifyOTP(req, res, next) {
+    try {
+      const { token } = req.body
+      const secret = process.env.OTP_SECRET
+
+      if (authenticator.verify({ token, secret })) res.status(204).json()
+      else throw createError(422, 'Invalid token')
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async createUser(req, res, next) {
     try {
       const { phone_number, pin } = req.body
@@ -69,7 +99,7 @@ class UserController {
       const { phone_number } = req.body
       let user = req.user
 
-      user.phone_number = phone_number
+      user.phone_number = phone_number || user.phone_number
 
       user = await user.save()
       res.status(200).json(user)
@@ -78,7 +108,19 @@ class UserController {
     }
   }
 
-  static async updateUserPin(req, res, next) {}
+  static async updateUserPin(req, res, next) {
+    try {
+      const { pin } = req.body
+      let user = req.user
+
+      user.pin = pin || user.pin
+
+      user = await user.save()
+      res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
 
   static async signInUser(req, res, next) {
     try {
@@ -101,7 +143,14 @@ class UserController {
     }
   }
 
-  static async getUserById(req, res, next) {}
+  static async getUserById(req, res, next) {
+    try {
+      const user = await User.findById(req.params.id)
+      res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
 }
 
 module.exports = UserController

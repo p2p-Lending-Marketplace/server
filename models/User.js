@@ -1,6 +1,6 @@
 const { Schema, model, models } = require('mongoose')
 const validate = require('mongoose-validator')
-const { hash, compare } = require('bcryptjs')
+const { hash } = require('bcryptjs')
 
 const userSchema = new Schema({
   name: {
@@ -41,7 +41,7 @@ const userSchema = new Schema({
       //   message: 'pin must have 6 length',
       // }),
       {
-        async validator(val) {
+        validator(val) {
           if (this.pin && this.pin == val) return true
           return /^[0-9]{6}$/.test(val)
         },
