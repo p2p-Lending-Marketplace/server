@@ -5,7 +5,7 @@ const fintechSchema = new Schema({
     type: String,
     required: true,
   },
-  company_logo_url: {
+  logoURL: {
     type: String,
     required: [ true, 'Company logo is required' ]
   },

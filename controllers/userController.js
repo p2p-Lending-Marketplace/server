@@ -8,14 +8,19 @@ const otpQueue = new Bull('otp-queue')
 class UserController {
   static async requestOTP(req, res, next) {
     try {
+      authenticator.options = {
+        step: 300,
+        window: 2
+      }
       const secret = process.env.OTP_SECRET
       const token = authenticator.generate(secret)
-
       const phoneNumber = req.body.phoneNumber
-
+      const timeRemaining = authenticator.timeRemaining()
       otpQueue.add({ phoneNumber, token })
 
-      res.status(204).json()
+      res.status(200).json({
+        timeRemaining
+      })
     } catch (error) {
       next(error)
     }
@@ -23,10 +28,21 @@ class UserController {
 
   static async verifyOTP(req, res, next) {
     try {
-      const { token } = req.body
+      const { token, phoneNumber } = req.body
       const secret = process.env.OTP_SECRET
-
-      if (authenticator.verify({ token, secret })) res.status(204).json()
+      
+      if (authenticator.verify({ token, secret })) {
+        User.findOne({phone_number: phoneNumber})
+          .then(user => {
+            if(user){
+              res.status(200).json({
+                user
+              })
+            }else{
+              res.status(204).json()
+            }
+          })
+      }
       else throw createError(422, 'Invalid token')
     } catch (error) {
       next(error)
@@ -58,25 +74,6 @@ class UserController {
         salary,
       } = req.body
 
-      // await User.findByIdAndUpdate(
-      //   req.params.id,
-      //   {
-      //     name,
-      //     email,
-      //     address,
-      //     photo_url,
-      //     id_url,
-      //     salary_slip_url,
-      //     current_job,
-      //     salary,
-      //   },
-      //   {
-      //     omitUndefined: true,
-      //     new: true,
-      //     runValidators: true,
-      //     context: 'query',
-      //   }
-      // )
       let user = req.user
 
       user.name = name || user.name
