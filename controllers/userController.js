@@ -15,12 +15,9 @@ class UserController {
       const secret = process.env.OTP_SECRET
       const token = authenticator.generate(secret)
       const phoneNumber = req.body.phoneNumber
-      const timeRemaining = authenticator.timeRemaining()
       otpQueue.add({ phoneNumber, token })
 
-      res.status(200).json({
-        timeRemaining
-      })
+      res.status(204).json()
     } catch (error) {
       next(error)
     }
@@ -72,6 +69,8 @@ class UserController {
         salary_slip_url,
         current_job,
         salary,
+        dateOfBirth,
+        placeOfBirth
       } = req.body
 
       let user = req.user
@@ -86,6 +85,8 @@ class UserController {
       user.salary_slip_url = salary_slip_url || user.salary_slip_url
       user.salary = salary || user.salary
       user.current_job = current_job || user.current_job
+      user.date_of_birth = dateOfBirth || user.date_of_birth
+      user.place_of_birth = placeOfBirth || user.place_of_birth 
 
       user = await user.save()
 
@@ -120,6 +121,17 @@ class UserController {
     try {
       const user = await User.findById(req.params.id)
       res.status(200).json(user)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async checkPhoneNumber(req,res,next) {
+    try {
+      const { phone_number } = req.body
+      const user = await User.findOne({ phone_number })
+      if(user) res.status(204).json()
+      else throw createError(404, "Phone number not found")
     } catch (error) {
       next(error)
     }
