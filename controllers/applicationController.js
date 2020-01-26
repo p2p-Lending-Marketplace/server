@@ -19,12 +19,10 @@ class ApplicationController {
     }
   }
 
-  static async updateApplicationStatus(req, res, next) {
+  static async updateApplicationDecision(req, res, next) {
     try {
-      const { status } = req.body
+      const { amount, loan_term, decision } = req.body
       let application = req.application
-
-      application.status = status || application.status
 
       application = await application.save()
       res.status(200).json(application)

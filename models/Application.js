@@ -25,7 +25,7 @@ const applicationSchema = new Schema(
       required: true,
     },
     additional_data: Object,
-    decisions: {
+    decision: {
       type: String,
       required: true,
       enum: ['pending', 'accepted', 'rejected'],

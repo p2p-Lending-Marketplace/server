@@ -48,6 +48,8 @@ class UserController {
       const {
         name,
         email,
+        phone_number,
+        pin,
         address,
         photo_url,
         id_url,
@@ -79,6 +81,8 @@ class UserController {
 
       user.name = name || user.name
       user.email = email || user.email
+      user.phone_number = phone_number || user.phone_number
+      user.pin = pin || user.pin
       user.address = address || user.address
       user.photo_url = photo_url || user.photo_url
       user.id_url = id_url || user.id_url
@@ -88,34 +92,6 @@ class UserController {
 
       user = await user.save()
 
-      res.status(200).json(user)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  static async updateUserPhoneNumber(req, res, next) {
-    try {
-      const { phone_number } = req.body
-      let user = req.user
-
-      user.phone_number = phone_number || user.phone_number
-
-      user = await user.save()
-      res.status(200).json(user)
-    } catch (error) {
-      next(error)
-    }
-  }
-
-  static async updateUserPin(req, res, next) {
-    try {
-      const { pin } = req.body
-      let user = req.user
-
-      user.pin = pin || user.pin
-
-      user = await user.save()
       res.status(200).json(user)
     } catch (error) {
       next(error)
