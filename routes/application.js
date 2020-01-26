@@ -6,5 +6,6 @@ application.post('/', ApplicationController.createNewApplication)
 application.get('/', ApplicationController.getAllApplications)
 application.get('/fintech/:id', ApplicationController.getAllFintechApplications)
 application.get('/user/:id', ApplicationController.getAllUserApplications)
+application.patch('/:id', ApplicationController.updateApplicationDecision)
 
 module.exports = application

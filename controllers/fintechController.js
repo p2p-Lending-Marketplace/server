@@ -19,11 +19,13 @@ class FintechController {
 
   static async updateFintechData(req, res, next) {
     try {
-      const { company_name, description } = req.body
+      const { company_name, description, min_interest, max_interest } = req.body
       let fintech = req.fintech
 
       fintech.company_name = company_name || fintech.company_name
       fintech.description = description || fintech.description
+      fintech.min_interest = min_interest || fintech.min_interest
+      fintech.max_interest = max_interest || fintech.max_interest
 
       fintech = await fintech.save()
       res.status(200).json(fintech)
@@ -32,18 +34,18 @@ class FintechController {
     }
   }
 
-  static async updateFintechRates(req, res, next) {
-    try {
-      const { min_interest, max_interest } = req.body
-      let fintech = req.fintech
+  // static async updateFintechRates(req, res, next) {
+  //   try {
+  //     const { min_interest, max_interest } = req.body
+  //     let fintech = req.fintech
 
-      fintech.min_interest = min_interest || fintech.min_interest
-      fintech.max_interest = max_interest || fintech.max_interest
+  //     fintech.min_interest = min_interest || fintech.min_interest
+  //     fintech.max_interest = max_interest || fintech.max_interest
 
-      fintech = await fintech.save()
-      res.status(200).json(fintech)
-    } catch (error) {}
-  }
+  //     fintech = await fintech.save()
+  //     res.status(200).json(fintech)
+  //   } catch (error) {}
+  // }
 
   static async getAllFinteches(req, res, next) {
     try {
