@@ -5,6 +5,6 @@ const { authorizeFintech } = require('../middlewares/auth')
 application.post('/', ApplicationController.createNewApplication)
 application.get('/', ApplicationController.getAllApplications)
 application.get('/fintech/:id', ApplicationController.getAllFintechApplications)
-application.get('/user/:id', ApplicationController.getAllUserApplication)
+application.get('/user/:id', ApplicationController.getAllUserApplications)
 
 module.exports = application
