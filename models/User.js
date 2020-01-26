@@ -3,6 +3,7 @@ const validate = require('mongoose-validator')
 const { hash } = require('bcryptjs')
 
 const userSchema = new Schema({
+  num_id: String,
   name: {
     type: String,
     validate: {
@@ -82,10 +83,22 @@ const userSchema = new Schema({
   },
   current_job: String,
   salary: Number,
+  date_of_birth: Date,
+  place_of_birth: String,
+  data_completed: Boolean
 })
 
 userSchema.pre('save', async function(next) {
   if (/^[0-9]{6}$/.test(this.pin)) this.pin = await hash(this.pin, 10)
+  next()
+})
+
+userSchema.pre('save', function(next) {
+  if (this.num_id && this.name && this.place_of_birth && this.date_of_birth && this.email && this.phone_number && this.address && this.photo_url && this.id_url && this.current_job && this.salary && this.salary_slip_url) {
+    this.data_completed = true
+  } else {
+    this.data_completed = false
+  }
   next()
 })
 
