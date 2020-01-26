@@ -3,13 +3,15 @@ const { Fintech } = require('../models')
 class FintechController {
   static async addNewFintech(req, res, next) {
     try {
-      const { company_name, description, min_interest, max_interest } = req.body
+      console.log("req.body", req.body)
+      const { company_name, description, min_interest, max_interest, logoURL } = req.body
 
       const fintech = await Fintech.create({
         company_name,
         description,
         min_interest,
         max_interest,
+        logoURL
       })
       res.status(201).json(fintech)
     } catch (error) {
