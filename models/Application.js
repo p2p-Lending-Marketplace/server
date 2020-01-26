@@ -16,16 +16,21 @@ const applicationSchema = new Schema(
       type: Number,
       required: true,
     },
+    loan_term: {
+      type: Number,
+      required: true
+    },
     objective: {
       type: String,
       required: true,
     },
     additional_data: Object,
-    decisions: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Decision',
-      required: true
-    }]
+    decisions: {
+      type: String,
+      required: true,
+      enum: ['pending', 'accepted', 'rejected'],
+      default: 'pending'
+    },
   },
   { timestamps: true }
 )
