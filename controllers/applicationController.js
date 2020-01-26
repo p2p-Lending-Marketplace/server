@@ -4,9 +4,6 @@ class ApplicationController {
   static async createNewApplication(req, res, next) {
     try {
       const { user_id, fintech_id, amount, loan_term, objective, additional_data } = req.body
-      // console.log('req.body => ',req.body);
-      // const user_id = req.user.id
-      // const fintech_id = req.params.id
 
       const application = await Application.create({
         user_id,
@@ -37,6 +34,8 @@ class ApplicationController {
   }
 
   static async getAllApplications(req, res, next) {
+    console.log('getAllApplications')
+
     try {
       const application = await Application.find()
 
