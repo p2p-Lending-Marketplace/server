@@ -1,7 +1,6 @@
 const fintech = require('express').Router()
 const { FintechController } = require('../controllers')
 const { authorizeFintech } = require('../middlewares/auth')
-const upload = require('../middlewares/gcsUpload')
 
 fintech.get('/', FintechController.getAllFinteches)
 fintech.post('/', FintechController.addNewFintech)
