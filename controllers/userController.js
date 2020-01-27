@@ -115,6 +115,7 @@ class UserController {
     try {
       const { phone_number, pin } = req.body
       const user = await User.findOne({ phone_number })
+      console.log(user)
       if (user && (await compare(pin, user.pin))) {
         const token = sign(
           { _id: user._id, role: 'user' },
