@@ -1,4 +1,4 @@
-const { User, Fintech } = require('../models')
+const { User, Fintech, Application } = require('../models')
 const createError = require('http-errors')
 
 module.exports = {
@@ -36,10 +36,10 @@ module.exports = {
   },
   async authorizeApplication(req, res, next) {
     try {
-      const fintech = await Fintech.findById(req.params.id)
-      if (!fintech) throw createError(404, 'fintech not found')
-      if (fintech) {
-        req.fintech = fintech
+      const application = await Application.findById(req.params.id)
+      if (!application) throw createError(404, 'application not found')
+      if (application) {
+        req.application = application
         next()
       } else throw createError(403, 'Unauthorized access to item')
     } catch (error) {

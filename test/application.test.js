@@ -19,8 +19,6 @@ async function createNewUser() {
 
     try {
       const { phone_number, pin } = newUser
-      console.log('phone_number => ',phone_number);
-      console.log('pin => ',pin);
       const user = await User.create({ phone_number, pin })
       console.log('user => ',user);
       userID = user._id
@@ -59,62 +57,127 @@ before( async function() {
     if(process.env.NODE_ENV === 'test') {
         await createNewUser();
         await createNewFintech();
-        console.log('=======================')
     }
 })
 
-// after(async function() {
-//     if (process.env.NODE_ENV === 'test') {
-//         await User.deleteMany({})
-//         await Fintech.deleteMany({})
-//         await Application.deleteMany({})
-//     }
-// });
+after(async function() {
+    if (process.env.NODE_ENV === 'test') {
+        await User.deleteMany({})
+        await Fintech.deleteMany({})
+        await Application.deleteMany({})
+    }
+});
 
-// let token;
+describe("Application Route Testing: Success Cases", function () {
+    describe("POST /application", function () {
+        it("should successfully create new application", function (done) {
+            let newApplication = {
+                user_id: userID,
+                fintech_id: fintechID,
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
 
-// describe("Application Route Testing", function () {
-//     describe("POST /application", function () {
-//         it("should successfully create new application", function (done) {
-//             let newApplication = {
-//                 user_id: userID,
-//                 fintech_id: fintechID,
-//                 amount: 10000000,
-//                 loan_term: 36,
-//                 objective: 'Renovasi Rumah',
-//             }
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    applicationID = res.body._id;
+                    console.log('applicationID => ',applicationID);
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(201);
+                    done()
+                });
+        });
+    })
+    describe("PATCH /application/:id", function() {
+    	it("should successfully update application decision", function (done) {
+    		let newApplicationData = {
+    			amount: 10000000,
+    			loan_term: 36,
+    			decision: "accepted"
+    		}
+    		console.log('+++')
+    		console.log('applicationID => ',applicationID);
+    		chai
+                .request(app)
+                .patch(`/application/${applicationID}`)
+                .send(newApplicationData)
+                .end(function (err, res) {
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(201);
+                    done()
+                });
+    	})
+    })
+});
 
-//             chai
-//                 .request(app)
-//                 .post("/application")
-//                 .send(newApplication)
-//                 .end(function (err, res) {
-//                     console.log("res.body => ", JSON.stringify(res.body, null, 3))
-//                     applicationID = res.body._id;
-//                     expect(err).to.be.null;
-//                     expect(res).to.have.status(201);
-//                     done()
-//                 });
-//         });
-//     })
-//     describe("PATCH /application/:id", function() {
-//     	describe("should successfully update application decision", function (done) {
-//     		let newApplicationData = {
-//     			amount: 10000000,
-//     			loan_term: 36,
-//     			decision: "accepted"
-//     		}
+describe("Application Route Testing: Error Cases", function () {
+	describe("POST /application", function () {
+		it("should return error if userID not provided", function (done) {
+			let newApplication = {
+                fintech_id: fintechID,
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
 
-//     		chai
-//                 .request(app)
-//                 .patch(`/application/${applicationID}`)
-//                 .send(newApplicationData)
-//                 .end(function (err, res) {
-//                     console.log("res.body => ", JSON.stringify(res.body, null, 3))
-//                     expect(err).to.be.null;
-//                     expect(res).to.have.status(201);
-//                     done()
-//                 });
-//     	})
-//     })
-// });
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `user_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if fintechID not provided", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if amount not provided", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+	})
+})
