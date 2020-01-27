@@ -1,4 +1,4 @@
-const { User } = require('../models')
+const { User, Admin } = require('../models')
 const { compare } = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 const createError = require('http-errors')
@@ -69,6 +69,36 @@ class UserController {
     }
   }
 
+  static async createFintechAdmin(req, res, next) {
+    try {
+      const { username, password } = req.body
+      const user = await Admin.create({ username, password })
+      const token = sign(
+        { _id: user._id, role: 'admin' },
+        process.env.JWT_SECRET
+      )
+      res.status(201).json({ token })
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async signInAdmin(req, res, next) {
+    try {
+      const { username, password } = req.body
+      const admin = await Admin.findOne({ username })
+      if (admin && (await compare(password, admin.password))) {
+        const token = sign(
+          { _id: user._id, role: 'user' },
+          process.env.JWT_SECRET
+        )
+        res.status(200).json({ ...admin, token })
+      } else throw createError(422, 'Wrong username/password')
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async updateUserDetail(req, res, next) {
     try {
       const {
@@ -120,7 +150,7 @@ class UserController {
           { _id: user._id, role: 'user' },
           process.env.JWT_SECRET
         )
-        res.status(200).json({...user, token })
+        res.status(200).json({ ...user, token })
       } else throw createError(422, 'Wrong phone_number/pin')
     } catch (error) {
       next(error)
