@@ -71,11 +71,29 @@ class ApplicationController {
   static async getAllFintechApplications(req, res, next) {
     try {
       const { fintech_id } = req.params
+      console.log('masuk sini', req.params)
 
       const applications = await Application.find({
         fintech_id,
-      })
-      res.status(200).json(applications)
+      }).populate('fintech_id', 'logoURL company_name')
+      let populatedData = []
+      for (let i = 0; i < applications.length; i++) {
+        let obj = {
+          decision: applications[i].decision,
+          status: applications[i].status,
+          _id: applications[i]._id,
+          user_id: applications[i].user_id,
+          fintech_id: applications[i].fintech_id._id,
+          logoURL: applications[i].fintech_id.logoURL,
+          company_name: applications[i].fintech_id.company_name,
+          amount: applications[i].amount,
+          loan_term: applications[i].loan_term,
+          objective: applications[i].objective,
+          createdAt: applications[i].createdAt,
+        }
+        populatedData.push(obj)
+      }
+      res.status(200).json(populatedData)
     } catch (error) {
       next(error)
     }
@@ -89,7 +107,7 @@ class ApplicationController {
         user_id,
       }).populate('fintech_id', 'logoURL company_name')
       let populatedData = []
-      for(let i=0; i<applications.length; i++) {
+      for (let i = 0; i < applications.length; i++) {
         let obj = {
           decision: applications[i].decision,
           status: applications[i].status,
@@ -101,7 +119,7 @@ class ApplicationController {
           amount: applications[i].amount,
           loan_term: applications[i].loan_term,
           objective: applications[i].objective,
-          createdAt: applications[i].createdAt
+          createdAt: applications[i].createdAt,
         }
         populatedData.push(obj)
       }

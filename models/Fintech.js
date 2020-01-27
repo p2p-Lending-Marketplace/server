@@ -1,4 +1,5 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, models } = require('mongoose')
+// const { hash } = require('bcryptjs')
 
 const fintechSchema = new Schema({
   company_name: {
@@ -56,5 +57,10 @@ const fintechSchema = new Schema({
   },
   password: String,
 })
+
+// fintechSchema.pre('save', async function(next) {
+//   this.password = await hash(this.password, 10)
+//   next()
+// })
 
 module.exports = model('Fintech', fintechSchema)
