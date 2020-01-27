@@ -46,8 +46,8 @@ const fintechSchema = new Schema({
     validate: [
       {
         async validator(val) {
-          const user = await models.Fintech.findOne({ username: val })
-          if (user && user.id != this.id) return false
+          const fintech = await models.Fintech.findOne({ username: val })
+          if (fintech && fintech.id != this.id) return false
           return true
         },
         msg: 'Username already registered',

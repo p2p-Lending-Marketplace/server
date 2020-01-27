@@ -9,6 +9,8 @@ class FintechController {
         min_interest,
         max_interest,
         logoURL,
+        username,
+        password,
       } = req.body
 
       const fintech = await Fintech.create({
@@ -17,6 +19,8 @@ class FintechController {
         min_interest,
         max_interest,
         logoURL,
+        username,
+        password,
       })
       res.status(201).json(fintech)
     } catch (error) {
@@ -32,6 +36,8 @@ class FintechController {
         min_interest,
         max_interest,
         logoURL,
+        username,
+        password,
       } = req.body
       let fintech = req.fintech
 
@@ -40,6 +46,8 @@ class FintechController {
       fintech.min_interest = min_interest || fintech.min_interest
       fintech.max_interest = max_interest || fintech.max_interest
       fintech.logoURL = logoURL || fintech.logoURL
+      fintech.username = username || fintech.username
+      fintech.password = password || fintech.password
 
       fintech = await fintech.save()
       res.status(200).json(fintech)
