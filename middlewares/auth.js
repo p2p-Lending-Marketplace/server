@@ -4,10 +4,8 @@ const { verify } = require('jsonwebtoken')
 
 module.exports = {
   async authenticate(req, res, next) {
-    console.log('authenticate')
     try {
       const { token } = req.headers
-      console.log(token)
       const payload = verify(token, process.env.JWT_SECRET)
       if (payload.role === 'user') {
         const user = await User.findById(payload._id)
