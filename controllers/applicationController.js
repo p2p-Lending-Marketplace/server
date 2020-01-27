@@ -3,9 +3,14 @@ const { Application } = require('../models')
 class ApplicationController {
   static async createNewApplication(req, res, next) {
     try {
-
-      const { user_id, fintech_id, amount, loan_term, objective, additional_data } = req.body
-      console.log(user_id, fintech_id, amount, loan_term, objective, additional_data)
+      const {
+        user_id,
+        fintech_id,
+        amount,
+        loan_term,
+        objective,
+        additional_data,
+      } = req.body
 
       const application = await Application.create({
         user_id,
@@ -27,6 +32,24 @@ class ApplicationController {
       const { amount, loan_term, decision } = req.body
       let application = req.application
 
+      application.amount = amount || application.amount
+      application.loan_term = loan_term || application.loan_term
+      application.decision = decision || application.decision
+
+      application = await application.save()
+      res.status(200).json(application)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async updateApplicationStatus(req, res, next) {
+    try {
+      const { status } = req.body
+      let application = req.application
+
+      application.status = status || application.status
+
       application = await application.save()
       res.status(200).json(application)
     } catch (error) {
@@ -35,39 +58,44 @@ class ApplicationController {
   }
 
   static async getAllApplications(req, res, next) {
-    console.log('getAllApplications')
-
     try {
-      const application = await Application.find()
+      const applications = await Application.find()
 
-      res.status(200).json(application)
+      res.status(200).json(applications)
     } catch (error) {
       next(error)
     }
   }
 
   static async getAllFintechApplications(req, res, next) {
-    const fintechId = req.params.id
-
     try {
-      const application = await Application.find({
-        fintech_id: fintechId
-      })
+      const { fintech_id } = req.params
 
-      res.status(200).json(application)
+      const applications = await Application.find({
+        fintech_id,
+      })
+      res.status(200).json(applications)
     } catch (error) {
       next(error)
     }
   }
 
   static async getAllUserApplications(req, res, next) {
-    const userId = req.params.id
-
     try {
-      const application = await Application.find({
-        user_id: userId
-      })
+      const { user_id } = req.params
 
+      const applications = await Application.find({
+        user_id,
+      })
+      res.status(200).json(applications)
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async getApplicationById(req, res, next) {
+    try {
+      const application = await Application.findById(req.params.id)
       res.status(200).json(application)
     } catch (error) {
       next(error)

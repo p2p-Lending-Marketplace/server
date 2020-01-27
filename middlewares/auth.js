@@ -47,18 +47,30 @@ module.exports = {
       next(error)
     }
   },
-  async authorizeApplication(req, res, next) {
+  async authorizeApplicationUser(req, res, next) {
     try {
       const application = await Application.findById(req.params.id)
       if (!application) throw createError(404, 'application not found')
-      const { decision, status } = req.body
-      if (decision && req.admin) {
+      if (req.admin || (req.user && application.user_id == req.user.id)) {
         req.application = application
         next()
-      } else if (status && req.user) {
-        req.application = application
+      } else createError(403, 'Access not granted')
+    } catch (error) {
+      next(error)
+    }
+  },
+  async authorizeApplicationAdmin(req, res, next) {
+    try {
+      if (req.admin) {
+        if (req.params.id) {
+          const application = await Application.findById(req.params.id)
+          if (!application) throw createError(404, 'application not found')
+          else {
+            req.application = application
+          }
+        }
         next()
-      } else throw createError(403, 'Unauthorized access to item')
+      } else throw createError(403, 'Access not granted')
     } catch (error) {
       next(error)
     }
