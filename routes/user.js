@@ -12,9 +12,9 @@ user.post('/checkphone', UserController.checkPhoneNumber)
 user.post('/otp', UserController.requestOTP)
 user.post('/verify', UserController.verifyOTP)
 
-user.post('/fintechadmin', UserController.createFintechAdmin)
+// user.post('/fintechadmin', UserController.createFintechAdmin)
 user.post('/signin', UserController.signInUser)
-user.post('/signadmin', UserController.signInAdmin)
+// user.post('/signadmin', UserController.signInAdmin)
 
 user.get('/:id', authenticate, UserController.getUserById)
 user.patch('/:id', authenticate, UserController.updateUserDetail)
