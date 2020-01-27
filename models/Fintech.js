@@ -7,7 +7,7 @@ const fintechSchema = new Schema({
   },
   logoURL: {
     type: String,
-    required: [ true, 'Company logo is required' ]
+    required: [true, 'Company logo is required'],
   },
   description: {
     type: String,
@@ -41,6 +41,20 @@ const fintechSchema = new Schema({
       },
     ],
   },
+  username: {
+    type: String,
+    validate: [
+      {
+        async validator(val) {
+          const user = await models.Fintech.findOne({ username: val })
+          if (user && user.id != this.id) return false
+          return true
+        },
+        msg: 'Username already registered',
+      },
+    ],
+  },
+  password: String,
 })
 
 module.exports = model('Fintech', fintechSchema)

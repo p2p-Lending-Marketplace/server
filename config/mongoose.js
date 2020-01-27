@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const URI =
-  'mongodb://localhost:27017/p2p-lending-marketplace-dev' || process.env.URI
+  process.env.URI || 'mongodb://localhost:27017/p2p-lending-marketplace-dev'
 
 mongoose
   .connect(URI, {

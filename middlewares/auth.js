@@ -15,6 +15,10 @@ module.exports = {
         const admin = await Admin.findById(payload._id)
         req.admin = admin
       }
+      if (payload.role == 'fintech') {
+        const fintech = await Fintech.findById(payload._id)
+        req.fintech = fintech
+      }
       next()
     } catch (error) {
       next(error)

@@ -4,10 +4,6 @@ const { hash } = require('bcryptjs')
 const adminSchema = new Schema({
   username: String,
   password: String,
-  fintech_id: {
-    type: Schema.Types.ObjectId,
-    ref: 'Fintech',
-  },
 })
 
 adminSchema.pre('save', async function(next) {
