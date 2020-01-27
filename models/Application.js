@@ -24,7 +24,7 @@ const applicationSchema = new Schema(
       type: String,
       required: true,
     },
-    additional_data: Object,
+    additional_data: String,
     decision: {
       type: String,
       required: true,
