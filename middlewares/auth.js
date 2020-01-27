@@ -34,11 +34,14 @@ module.exports = {
   },
   async authorizeFintech(req, res, next) {
     try {
-      const fintech = await Fintech.findById(req.params.id)
-      if (!fintech) throw createError(404, 'Fintech not found')
       if (req.admin) {
-        req.fintech = fintech
-        next()
+        if (req.params.id) {
+          const fintech = await Fintech.findById(req.params.id)
+          if (fintech) {
+            req.fintech = fintech
+            next()
+          } else throw createError(404, 'Fintech not found')
+        } else next()
       } else throw createError(403, 'Access not granted')
     } catch (error) {
       next(error)
