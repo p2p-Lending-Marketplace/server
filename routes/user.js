@@ -5,6 +5,9 @@ const { authenticate, authorizeUser } = require('../middlewares/auth')
 user.get('/', authenticate, authorizeUser, UserController.getAllUser)
 user.post('/', UserController.createUser)
 
+user.post('/registerpush', UserController.registerPushNotification)
+user.post('/sendpush', UserController.sendPushNotification)
+
 user.post('/checkphone', UserController.checkPhoneNumber)
 user.post('/otp', UserController.requestOTP)
 user.post('/verify', UserController.verifyOTP)

@@ -2,7 +2,7 @@ module.exports = (err, req, res, next) => {
   let status = 500
   const messages = []
 
-  console.log(err.name)
+  console.log(err)
   if (err.name === 'ValidationError') {
     status = 422
     for (const path in err.errors) {

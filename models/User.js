@@ -85,7 +85,8 @@ const userSchema = new Schema({
   salary: Number,
   date_of_birth: Date,
   place_of_birth: String,
-  data_completed: Boolean
+  data_completed: Boolean,
+  push_token: String,
 })
 
 userSchema.pre('save', async function(next) {
@@ -94,7 +95,20 @@ userSchema.pre('save', async function(next) {
 })
 
 userSchema.pre('save', function(next) {
-  if (this.num_id && this.name && this.place_of_birth && this.date_of_birth && this.email && this.phone_number && this.address && this.photo_url && this.id_url && this.current_job && this.salary && this.salary_slip_url) {
+  if (
+    this.num_id &&
+    this.name &&
+    this.place_of_birth &&
+    this.date_of_birth &&
+    this.email &&
+    this.phone_number &&
+    this.address &&
+    this.photo_url &&
+    this.id_url &&
+    this.current_job &&
+    this.salary &&
+    this.salary_slip_url
+  ) {
     this.data_completed = true
   } else {
     this.data_completed = false
