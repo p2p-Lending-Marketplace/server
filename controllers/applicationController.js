@@ -2,6 +2,7 @@ const { Application } = require('../models')
 
 class ApplicationController {
   static async createNewApplication(req, res, next) {
+    console.log(req.body)
     try {
       const {
         user_id,

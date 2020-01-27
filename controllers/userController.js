@@ -115,13 +115,12 @@ class UserController {
     try {
       const { phone_number, pin } = req.body
       const user = await User.findOne({ phone_number })
-      console.log(user)
       if (user && (await compare(pin, user.pin))) {
         const token = sign(
           { _id: user._id, role: 'user' },
           process.env.JWT_SECRET
         )
-        res.status(200).json({ token })
+        res.status(200).json({...user, token })
       } else throw createError(422, 'Wrong phone_number/pin')
     } catch (error) {
       next(error)
