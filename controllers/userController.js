@@ -14,7 +14,6 @@ class UserController {
   static async registerPushNotification(req, res, next) {
     try {
       const { token, phone_number } = req.body
-      console.log(token, phone_number)
       const user = await User.findOneAndUpdate(
         { phone_number },
         { push_token: token },
@@ -29,11 +28,8 @@ class UserController {
 
   static async sendPushNotification(req, res, next) {
     try {
-      console.log('masuk sini bray')
-      console.log(req.body)
       const { phone_number, title, sound, body } = req.body
       const user = await User.findOne({ phone_number })
-      console.log(user)
       if (!user) throw createError(404, 'User not found')
       if (!Expo.isExpoPushToken(user.push_token))
         throw createError(400, 'Invalid expo push token')
@@ -45,8 +41,8 @@ class UserController {
           sound,
         },
       ])
-      console.log('success!')
-      console.log(ticket)
+      // console.log('success!')
+      // console.log(ticket)
       res.status(204).json()
     } catch (error) {
       next(error)
@@ -114,35 +110,35 @@ class UserController {
     }
   }
 
-  static async createFintechAdmin(req, res, next) {
-    try {
-      const { username, password } = req.body
-      const user = await Admin.create({ username, password })
-      const token = sign(
-        { _id: user._id, role: 'admin' },
-        process.env.JWT_SECRET
-      )
-      res.status(201).json({ token })
-    } catch (error) {
-      next(error)
-    }
-  }
+  // static async createFintechAdmin(req, res, next) {
+  //   try {
+  //     const { username, password } = req.body
+  //     const user = await Admin.create({ username, password })
+  //     const token = sign(
+  //       { _id: user._id, role: 'admin' },
+  //       process.env.JWT_SECRET
+  //     )
+  //     res.status(201).json({ token })
+  //   } catch (error) {
+  //     next(error)
+  //   }
+  // }
 
-  static async signInAdmin(req, res, next) {
-    try {
-      const { username, password } = req.body
-      const admin = await Admin.findOne({ username })
-      if (admin && (await compare(password, admin.password))) {
-        const token = sign(
-          { _id: user._id, role: 'user' },
-          process.env.JWT_SECRET
-        )
-        res.status(200).json({ ...admin, token })
-      } else throw createError(422, 'Wrong username/password')
-    } catch (error) {
-      next(error)
-    }
-  }
+  // static async signInAdmin(req, res, next) {
+  //   try {
+  //     const { username, password } = req.body
+  //     const admin = await Admin.findOne({ username })
+  //     if (admin && (await compare(password, admin.password))) {
+  //       const token = sign(
+  //         { _id: user._id, role: 'user' },
+  //         process.env.JWT_SECRET
+  //       )
+  //       res.status(200).json({ ...admin, token })
+  //     } else throw createError(422, 'Wrong username/password')
+  //   } catch (error) {
+  //     next(error)
+  //   }
+  // }
 
   static async updateUserDetail(req, res, next) {
     try {
