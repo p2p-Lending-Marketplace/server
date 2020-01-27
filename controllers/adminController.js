@@ -7,6 +7,7 @@ class AdminController {
   static async loginAdmin(req, res, next) {
     try {
       const { username, password } = req.body
+      console.log(username, password)
       const admin = await Admin.findOne({ username })
       if (admin && (await compare(password, admin.password))) {
         const token = sign(
@@ -17,7 +18,11 @@ class AdminController {
           },
           process.env.JWT_SECRET
         )
-        res.status(200).json({ ...admin._doc, token })
+        res.status(200).json({
+          ...admin._doc,
+          role: admin.fintech_id ? 'fintech' : 'admin',
+          token,
+        })
       } else throw createError(422, 'Wrong username/password')
     } catch (error) {
       next(error)
