@@ -7,7 +7,52 @@ const { authenticator } = require('otplib')
 const Bull = require('bull')
 const otpQueue = new Bull('otp-queue')
 
+const Expo = require('expo-server-sdk').default
+const expo = new Expo()
+
 class UserController {
+  static async registerPushNotification(req, res, next) {
+    try {
+      const { token, phone_number } = req.body
+      console.log(token, phone_number)
+      const user = await User.findOneAndUpdate(
+        { phone_number },
+        { push_token: token },
+        { new: true }
+      )
+      if (user) res.status(200).json({ token })
+      else throw createError(404, 'User not found')
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  static async sendPushNotification(req, res, next) {
+    try {
+      console.log('masuk sini bray')
+      console.log(req.body)
+      const { phone_number, title, sound, body } = req.body
+      const user = await User.findOne({ phone_number })
+      console.log(user)
+      if (!user) throw createError(404, 'User not found')
+      if (!Expo.isExpoPushToken(user.push_token))
+        throw createError(400, 'Invalid expo push token')
+      const ticket = await expo.sendPushNotificationsAsync([
+        {
+          to: user.push_token,
+          title,
+          body,
+          sound,
+        },
+      ])
+      console.log('success!')
+      console.log(ticket)
+      res.status(204).json()
+    } catch (error) {
+      next(error)
+    }
+  }
+
   static async checkPhoneNumber(req, res, next) {
     try {
       const { phone_number } = req.body
