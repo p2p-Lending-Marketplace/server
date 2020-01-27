@@ -1,82 +1,103 @@
-const chai = require("chai");
-const chaiHttp = require('chai-http');
-const expect = chai.expect;
-const app = require('../app');
-const User = require('../models/Fintech');
+// const chai = require("chai");
+// const chaiHttp = require('chai-http');
+// const expect = chai.expect;
+// const app = require('../app');
+// const Fintech = require('../models/Fintech');
 
-console.log('fintech-test started');
+// console.log('fintech-test started');
 
-chai.use(chaiHttp);
+// chai.use(chaiHttp);
 
-after(function(done) {
-    if (process.env.NODE_ENV === 'test') {
-        Fintech.deleteMany({})
-          .then(function() {
-            done();
-          })
-          .catch(function(err) {
-            console.log('err => ',err);
-            done(err)
-          })
-    }
-});
+// let newFintechID;
 
-let token;
+// after(function(done) {
+//     if (process.env.NODE_ENV === 'test') {
+//         Fintech.deleteMany({})
+//           .then(function() {
+//             done();
+//           })
+//           .catch(function(err) {
+//             console.log('err => ',err);
+//             done(err)
+//           })
+//     }
+// });
 
-describe("Fintech Route Testing", function () {
-    describe("POST /fintech", function () {
-        it("should successfully create new Fintech", function (done) {
-            let newFintech = {
-                company_name: 'Fintech A',
-                description: 'Fintech A description',
-                min_interest: 3,
-                max_interest: 5
-            }
+// let token;
 
-            chai
-            .request(app)
-            .post("/fintech")
-            .send(pin)
-            .end(function (err, res) {
-                console.log("res.body => ", JSON.stringify(res.body, null, 3))
-                expect(err).to.be.null;
-                expect(res).to.have.status(204);
-                done()
-            });
-        });
-        it("should return error if company_name is empty", function (done) {
-          
-        });
-        it("should return error if description is empty", function (done) {
-            
-        });
-        it("should return error if min_interest is empty", function (done) {
-            
-        });
-        it("should return error if max_interest is empty", function (done) {
-           
-        });
-    })
-    describe("POST /fintech", function () {
-    	it("should successfully verify with correct token", function (done) {
+// describe("Fintech Route Testing", function () {
+//     describe("POST /fintech", function () {
+//         it("should successfully create new Fintech", function (done) {
+//             let newFintech = {
+//                 company_name: 'Fintech A',
+//                 description: 'Fintech A description',
+//                 min_interest: 3,
+//                 max_interest: 5,
+//                 logoURL: "http://abc.com/def.jpg"
+//             }
 
-    	})
-    	it("should return error with false token", function (done) {
-    		
-    	})
-    	it("should return error with empty token", function (done) {
-    		
-    	})
-    })
-    describe("PATCH /fintech/:id", function () {
-    	it("should successfully update", function (done) {
+//             chai
+//                 .request(app)
+//                 .post("/fintech")
+//                 .send(newFintech)
+//                 .end(function (err, res) {
+//                     console.log("res.body => ", JSON.stringify(res.body, null, 3))
+//                     expect(err).to.be.null;
+//                     expect(res).to.have.status(201);
+//                     newFintechID = res.body._id
+//                     done()
+//                 });
+//         });
+//     })
+//     describe("GET /fintech", function () {
+//         it("should successfully return all fintech members", function (done) {
+//             chai
+//                 .request(app)
+//                 .get("/fintech")
+//                 .end(function (err, res) {
+//                     console.log("res.body => ", JSON.stringify(res.body, null, 3))
+//                     expect(err).to.be.null;
+//                     expect(res).to.have.status(200);
+//                     done()
+//                 });
+//         })
+//     })
+//     describe("GET /fintech/:id", function () {
+//         it("should successfully return all fintech members", function (done) {
 
-    	})
-    	it("should return error if nothing changed", function (done) {
-    		
-    	})
-    	it("should return error with empty token", function (done) {
-    		
-    	})
-    })
-});
+//             chai
+//                 .request(app)
+//                 .get(`/fintech/${newFintechID}`)
+//                 .end(function (err, res) {
+//                     console.log("res.body => ", JSON.stringify(res.body, null, 3))
+//                     expect(err).to.be.null;
+//                     expect(res).to.have.status(200);
+//                     done()
+//                 });
+//         })
+//     })
+//     describe("PATCH /fintech/:id", function () {
+//         it("should successfully update fintech data", function (done) {
+
+//             let newFintechData = {
+//                 company_name: 'Fintech A',
+//                 description: 'Fintech A description',
+//                 min_interest: 4,
+//                 max_interest: 5,
+//                 logoURL: "http://abc.com/def.jpg"
+//             }
+
+//             chai
+//                 .request(app)
+//                 .patch(`/fintech/${newFintechID}`)
+//                 .send(newFintechData)
+//                 .end(function (err, res) {
+//                     console.log("res.body => ", JSON.stringify(res.body, null, 3))
+//                     expect(err).to.be.null;
+//                     //harus berupa object
+//                     expect(res).to.have.status(200);
+//                     done()
+//                 });
+//         })
+//     })
+// });
