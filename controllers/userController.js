@@ -32,9 +32,7 @@ class UserController {
         User.findOne({phone_number: phoneNumber})
           .then(user => {
             if(user){
-              res.status(200).json({
-                user
-              })
+              res.status(200).json(user)
             }else{
               res.status(204).json()
             }
@@ -69,9 +67,11 @@ class UserController {
         salary_slip_url,
         current_job,
         salary,
-        dateOfBirth,
-        placeOfBirth
+        date_of_birth,
+        place_of_birth,
+        num_id
       } = req.body
+      console.log(req.body)
 
       let user = req.user
 
@@ -85,8 +85,9 @@ class UserController {
       user.salary_slip_url = salary_slip_url || user.salary_slip_url
       user.salary = salary || user.salary
       user.current_job = current_job || user.current_job
-      user.date_of_birth = dateOfBirth || user.date_of_birth
-      user.place_of_birth = placeOfBirth || user.place_of_birth 
+      user.date_of_birth = date_of_birth || user.date_of_birth
+      user.place_of_birth = place_of_birth || user.place_of_birth ,
+      user.num_id = num_id || user.num_id
 
       user = await user.save()
 
