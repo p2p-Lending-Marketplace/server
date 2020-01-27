@@ -1,11 +1,41 @@
 const application = require('express').Router()
 const { ApplicationController } = require('../controllers')
-const { authorizeFintech, authorizeApplication } = require('../middlewares/auth')
+const {
+  authenticate,
+  authorizeApplicationUser,
+  authorizeApplicationAdmin,
+} = require('../middlewares/auth')
 
+application.use('/', authenticate)
 application.post('/', ApplicationController.createNewApplication)
-application.get('/', ApplicationController.getAllApplications)
-application.get('/fintech/:id', ApplicationController.getAllFintechApplications)
-application.get('/user/:id', ApplicationController.getAllUserApplications)
-application.patch('/:id', authorizeApplication, ApplicationController.updateApplicationDecision)
+
+application.get(
+  '/',
+  authorizeApplicationAdmin,
+  ApplicationController.getAllApplications
+)
+application.get(
+  '/fintech/:fitech_id',
+  authorizeApplicationAdmin,
+  ApplicationController.getAllFintechApplications
+)
+application.get('/user/:user_id', ApplicationController.getAllUserApplications)
+
+application.patch(
+  '/:id/decision',
+  authorizeApplicationAdmin,
+  ApplicationController.updateApplicationDecision
+)
+application.patch(
+  '/:id/status',
+  authorizeApplicationUser,
+  ApplicationController.updateApplicationStatus
+)
+
+application.get(
+  '/:id',
+  authorizeApplicationUser,
+  ApplicationController.getApplicationById
+)
 
 module.exports = application

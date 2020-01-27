@@ -18,7 +18,7 @@ const applicationSchema = new Schema(
     },
     loan_term: {
       type: Number,
-      required: true
+      required: true,
     },
     objective: {
       type: String,
@@ -29,7 +29,13 @@ const applicationSchema = new Schema(
       type: String,
       required: true,
       enum: ['pending', 'accepted', 'rejected'],
-      default: 'pending'
+      default: 'pending',
+    },
+    status: {
+      type: String,
+      required: true,
+      enum: ['active', 'closed'],
+      default: 'active',
     },
   },
   { timestamps: true }
