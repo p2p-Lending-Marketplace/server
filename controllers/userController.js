@@ -191,7 +191,7 @@ class UserController {
           { _id: user._id, role: 'user' },
           process.env.JWT_SECRET
         )
-        res.status(200).json({ ...user, token })
+        res.status(200).json({ token })
       } else throw createError(422, 'Wrong phone_number/pin')
     } catch (error) {
       next(error)
@@ -209,8 +209,8 @@ class UserController {
 
   static async getUserById(req, res, next) {
     try {
-      let user = null
-      if (!req.user) user = await User.findById(req.params.id)
+      let user = req.user
+      if (req.params.id) user = await User.findById(req.params.id)
       res.status(200).json(user)
     } catch (error) {
       next(error)
