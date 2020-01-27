@@ -2,135 +2,182 @@ const chai = require("chai");
 const chaiHttp = require('chai-http');
 const expect = chai.expect;
 const app = require('../app');
-const User = require('../models/User');
-const { authenticator } = require('otplib')
-
-console.log('user test started');
+const { User } = require('../models');
+const { Fintech } = require('../models');
+const { Application } = require('../models');
 
 chai.use(chaiHttp);
 
-after(function(done) {
+let userID, fintechID, applicationID;
+
+async function createNewUser() {
+	console.log('createNewUser')
+    let newUser = {
+        phone_number: "+6282213104881",
+        pin: "123456"
+    }
+
+    try {
+      const { phone_number, pin } = newUser
+      const user = await User.create({ phone_number, pin })
+      console.log('user => ',user);
+      userID = user._id
+      console.log('userID => ',userID);
+    } catch (error) {
+      console.log('error => ',error);
+    }
+}
+
+async function createNewFintech() {
+    let newFintech = {
+        company_name: 'Fintech A',
+        description: 'Fintech A description',
+        min_interest: 3,
+        max_interest: 5,
+        logoURL: "http://abc.com/def.jpg"
+    }
+
+    try {
+      const { company_name, description, min_interest, max_interest, logoURL } = newFintech
+
+      const fintech = await Fintech.create({
+        company_name,
+        description,
+        min_interest,
+        max_interest,
+        logoURL
+      })
+      fintechID = fintech._id
+    } catch (error) {
+      console.log('error => ',error);
+    }
+}
+
+before( async function() {
+    if(process.env.NODE_ENV === 'test') {
+        await createNewUser();
+        await createNewFintech();
+    }
+})
+
+after(async function() {
     if (process.env.NODE_ENV === 'test') {
-        User.deleteMany({})
-          .then(function() {
-            done();
-          })
-          .catch(function(err) {
-            console.log('err => ',err);
-            done(err)
-          })
+        await User.deleteMany({})
+        await Fintech.deleteMany({})
+        await Application.deleteMany({})
     }
 });
 
-let token;
-
-describe("User Route Testing", function () {
-    describe("POST /user", function () {
-        it("should successfully create new user", function (done) {
-            let phoneNumber = 123456;
-            const secret = process.env.OTP_SECRET
-      		const token = authenticator.generate(secret)
-
-            async 
-
-            chai
-            .request(app)
-            .post("/user/otp")
-            .send(pin)
-            .end(function (err, res) {
-                console.log("res.body => ", JSON.stringify(res.body, null, 3))
-                expect(err).to.be.null;
-                expect(res).to.have.status(204);
-                done()
-            });
-        });
-        it("should return error if phone number total digit less than 7 digits", function (done) {
-            let phoneNumber = 123456;
-            const secret = process.env.OTP_SECRET
-      		const token = authenticator.generate(secret)
-
-            async 
+describe("Application Route Testing: Success Cases", function () {
+    describe("POST /application", function () {
+        it("should successfully create new application", function (done) {
+            let newApplication = {
+                user_id: userID,
+                fintech_id: fintechID,
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
 
             chai
-            .request(app)
-            .post("/user/otp")
-            .send(pin)
-            .end(function (err, res) {
-                console.log("res.body => ", JSON.stringify(res.body, null, 3))
-                expect(err).to.be.null;
-                expect(res).to.have.status(204);
-                done()
-            });
-        });
-        it("should return error if phone numbers contains non digit character", function (done) {
-            let phoneNumber = 123456;
-            const secret = process.env.OTP_SECRET
-      		const token = authenticator.generate(secret)
-
-            chai
-            .request(app)
-            .post("/user/otp")
-            .send(pin)
-            .end(function (err, res) {
-                console.log("res.body => ", JSON.stringify(res.body, null, 3))
-                expect(err).to.be.null;
-                expect(res).to.have.status(204);
-                done()
-            });
-        });
-        it("should return error if phone number format isn't correct (start with other than 0 character", function (done) {
-            let phoneNumber = 123456;
-            const secret = process.env.OTP_SECRET
-      		const token = authenticator.generate(secret)
-
-            chai
-            .request(app)
-            .post("/user/otp")
-            .send(pin)
-            .end(function (err, res) {
-                console.log("res.body => ", JSON.stringify(res.body, null, 3))
-                expect(err).to.be.null;
-                expect(res).to.have.status(204);
-                done()
-            });
-        });
-        it("should return error if phone number format isn't correct (start with other than 0 character", function (done) {
-            let phoneNumber = 123456;
-            const secret = process.env.OTP_SECRET
-      		const token = authenticator.generate(secret)
-
-            chai
-            .request(app)
-            .post("/user/otp")
-            .send(pin)
-            .end(function (err, res) {
-                console.log("res.body => ", JSON.stringify(res.body, null, 3))
-                expect(err).to.be.null;
-                expect(res).to.have.status(204);
-                done()
-            });
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    applicationID = res.body._id;
+                    console.log('applicationID => ',applicationID);
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(201);
+                    done()
+                });
         });
     })
-    describe("POST /user/verify", function () {
-    	it("should successfully verify with correct token", function (done) {
-
-    	})
-    	it("should return error with false token", function (done) {
-    		
-    	})
-    	it("should return error with empty token", function (done) {
-    		
-    	})
-    })
-    describe("GET /user", function () {
-    	it("should successfully verify with correct token", function (done) {
-
-    	})
-    	it("should return error with false token", function (done) {
-    		
-    	})
-    	it("should return error with empty token", function (done) {
-    		
+    describe("PATCH /application/:id", function() {
+    	it("should successfully update application decision", function (done) {
+    		let newApplicationData = {
+    			amount: 10000000,
+    			loan_term: 36,
+    			decision: "accepted"
+    		}
+    		console.log('+++')
+    		console.log('applicationID => ',applicationID);
+    		chai
+                .request(app)
+                .patch(`/application/${applicationID}`)
+                .send(newApplicationData)
+                .end(function (err, res) {
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(err).to.be.null;
+                    expect(res).to.have.status(201);
+                    done()
+                });
     	})
     })
 });
+
+describe("Application Route Testing: Error Cases", function () {
+	describe("POST /application", function () {
+		it("should return error if userID not provided", function (done) {
+			let newApplication = {
+                fintech_id: fintechID,
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `user_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if fintechID not provided", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if amount not provided", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+	})
+})

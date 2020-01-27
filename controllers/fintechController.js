@@ -3,7 +3,6 @@ const { Fintech } = require('../models')
 class FintechController {
   static async addNewFintech(req, res, next) {
     try {
-      console.log("req.body", req.body)
       const { company_name, description, min_interest, max_interest, logoURL } = req.body
 
       const fintech = await Fintech.create({
@@ -35,19 +34,6 @@ class FintechController {
       next(error)
     }
   }
-
-  // static async updateFintechRates(req, res, next) {
-  //   try {
-  //     const { min_interest, max_interest } = req.body
-  //     let fintech = req.fintech
-
-  //     fintech.min_interest = min_interest || fintech.min_interest
-  //     fintech.max_interest = max_interest || fintech.max_interest
-
-  //     fintech = await fintech.save()
-  //     res.status(200).json(fintech)
-  //   } catch (error) {}
-  // }
 
   static async getAllFinteches(req, res, next) {
     try {

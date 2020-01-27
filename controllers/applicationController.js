@@ -3,7 +3,9 @@ const { Application } = require('../models')
 class ApplicationController {
   static async createNewApplication(req, res, next) {
     try {
+
       const { user_id, fintech_id, amount, loan_term, objective, additional_data } = req.body
+      console.log(user_id, fintech_id, amount, loan_term, objective, additional_data)
 
       const application = await Application.create({
         user_id,
@@ -13,6 +15,7 @@ class ApplicationController {
         objective,
         additional_data,
       })
+
       res.status(201).json(application)
     } catch (error) {
       next(error)
