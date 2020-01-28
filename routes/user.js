@@ -17,6 +17,6 @@ user.post('/signin', UserController.signInUser)
 // user.post('/signadmin', UserController.signInAdmin)
 
 user.get('/detail', authenticate, UserController.getUserById)
-user.patch('/:id', authenticate, UserController.updateUserDetail)
+user.patch('/', authenticate, UserController.updateUserDetail)
 
 module.exports = user
