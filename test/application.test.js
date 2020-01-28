@@ -138,9 +138,30 @@ describe("Application Route Testing: Error Cases", function () {
                     done()
                 });
 		})
-		it("should return error if fintechID not provided", function (done) {
+		it("should return error if userID not found", function (done) {
+			let newApplication = {
+				user_id: "intentionally-wrong-userID",
+                fintech_id: fintechID,
+                amount: 10000000,
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `user_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if fintechID is not found", function (done) {
 			let newApplication = {
 				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                fintech_id: "intentionally-wrong-fintechID",
                 amount: 10000000,
                 loan_term: 36,
                 objective: 'Renovasi Rumah',
@@ -161,10 +182,91 @@ describe("Application Route Testing: Error Cases", function () {
 		it("should return error if amount not provided", function (done) {
 			let newApplication = {
 				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
-                
-                amount: 10000000,
+                fintech_id: fintechID,
                 loan_term: 36,
                 objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if amount is not a integer", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                fintech_id: fintechID,
+                amount: "10000000",
+                loan_term: 36,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if loan_term not provided", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                fintech_id: fintechID,
+                amount: 10000000,
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if loan_term is not a integer", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                fintech_id: fintechID,
+                amount: 10000000,
+                loan_term: "36",
+                objective: 'Renovasi Rumah',
+                additional_data: 'data tambahan'
+            }
+
+            chai
+                .request(app)
+                .post("/application")
+                .send(newApplication)
+                .end(function (err, res) {
+                	console.log('+++')
+                    console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res.body.messages[0]).to.contains("Path `fintech_id` is required.");
+                    done()
+                });
+		})
+		it("should return error if objective not provided", function (done) {
+			let newApplication = {
+				user_id: userID,	// user ID before hook belum jalan !!!!!!!!!!!!!!!!!
+                fintech_id: fintechID,
+                amount: 10000000,
+                loan_term: 36,
                 additional_data: 'data tambahan'
             }
 
