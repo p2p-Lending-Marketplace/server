@@ -75,7 +75,9 @@ class ApplicationController {
 
       const applications = await Application.find({
         fintech_id,
-      }).populate('fintech_id', 'logoURL company_name')
+      })
+        // .populate('user_id', 'name')
+        .populate('fintech_id', 'logoURL company_name')
       let populatedData = []
       for (let i = 0; i < applications.length; i++) {
         let obj = {
