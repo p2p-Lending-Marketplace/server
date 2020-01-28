@@ -28,8 +28,10 @@ class UserController {
 
   static async sendPushNotification(req, res, next) {
     try {
-      const { phone_number, title, sound, body } = req.body
-      const user = await User.findOne({ phone_number })
+      const { phone_number, _id, title, sound, body } = req.body
+      const user = await User.findOne({ $or: [{ phone_number }, { _id }] })
+      console.log('user')
+      console.log(user)
       if (!user) throw createError(404, 'User not found')
       if (!Expo.isExpoPushToken(user.push_token))
         throw createError(400, 'Invalid expo push token')
@@ -38,11 +40,11 @@ class UserController {
           to: user.push_token,
           title,
           body,
-          sound,
+          sound: sound || 'default',
         },
       ])
-      // console.log('success!')
-      // console.log(ticket)
+      console.log('success!')
+      console.log(ticket)
       res.status(204).json()
     } catch (error) {
       next(error)
@@ -161,6 +163,8 @@ class UserController {
 
       let user = req.user
       if(!user)throw createError(404, 'User not found')
+
+      if (!user) throw createError(404, 'User not found')
 
       user.name = name || user.name
       user.email = email || user.email
