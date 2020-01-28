@@ -5,7 +5,6 @@ class ApplicationController {
     console.log(req.body)
     try {
       const {
-        user_id,
         fintech_id,
         amount,
         loan_term,
@@ -13,8 +12,10 @@ class ApplicationController {
         additional_data,
       } = req.body
 
+      const user = req.user
+
       const application = await Application.create({
-        user_id,
+        user_id: user.id,
         fintech_id,
         amount,
         loan_term,
@@ -38,7 +39,28 @@ class ApplicationController {
       application.decision = decision || application.decision
 
       application = await application.save()
-      res.status(200).json(application)
+
+      application = await application
+        .populate('fintech_id', 'logoURL company_name')
+        .populate('user_id', '-pin')
+        .execPopulate()
+
+      console.log(application)
+
+      let obj = {
+        decision: application.decision,
+        status: application.status,
+        _id: application._id,
+        user_id: application.user_id,
+        fintech_id: application.fintech_id._id,
+        logoURL: application.fintech_id.logoURL,
+        company_name: application.fintech_id.company_name,
+        amount: application.amount,
+        loan_term: application.loan_term,
+        objective: application.objective,
+        createdAt: application.createdAt,
+      }
+      res.status(200).json(obj)
     } catch (error) {
       next(error)
     }
@@ -103,10 +125,10 @@ class ApplicationController {
 
   static async getAllUserApplications(req, res, next) {
     try {
-      const { user_id } = req.params
-
+      // const { user_id } = req.params
+      const user = req.user
       const applications = await Application.find({
-        user_id,
+        user_id: user.id,
       }).populate('fintech_id', 'logoURL company_name')
       let populatedData = []
       for (let i = 0; i < applications.length; i++) {
@@ -125,6 +147,9 @@ class ApplicationController {
         }
         populatedData.push(obj)
       }
+      console.log('populatedData')
+      console.log(populatedData[0])
+
       res.status(200).json(populatedData)
     } catch (error) {
       next(error)
@@ -134,7 +159,26 @@ class ApplicationController {
   static async getApplicationById(req, res, next) {
     try {
       const application = await Application.findById(req.params.id)
-      res.status(200).json(application)
+        .populate('fintech_id', 'logoURL company_name')
+        .populate('user_id', '-pin')
+
+      // console.log(application)
+
+      let obj = {
+        decision: application.decision,
+        status: application.status,
+        _id: application._id,
+        user_id: application.user_id,
+        fintech_id: application.fintech_id._id,
+        logoURL: application.fintech_id.logoURL,
+        company_name: application.fintech_id.company_name,
+        amount: application.amount,
+        loan_term: application.loan_term,
+        objective: application.objective,
+        createdAt: application.createdAt,
+      }
+
+      res.status(200).json(obj)
     } catch (error) {
       next(error)
     }

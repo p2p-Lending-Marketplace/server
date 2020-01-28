@@ -2,6 +2,7 @@ const { User, Admin } = require('../models')
 const { compare } = require('bcryptjs')
 const { sign } = require('jsonwebtoken')
 const createError = require('http-errors')
+const { Types } = require('mongoose')
 
 const { authenticator } = require('otplib')
 const Bull = require('bull')
@@ -28,8 +29,10 @@ class UserController {
 
   static async sendPushNotification(req, res, next) {
     try {
-      const { phone_number, title, sound, body } = req.body
-      const user = await User.findOne({ phone_number })
+      const { phone_number, _id, title, sound, body } = req.body
+      const user = await User.findOne({
+        $or: [{ phone_number }, { _id }],
+      })
       if (!user) throw createError(404, 'User not found')
       if (!Expo.isExpoPushToken(user.push_token))
         throw createError(400, 'Invalid expo push token')
@@ -38,11 +41,9 @@ class UserController {
           to: user.push_token,
           title,
           body,
-          sound,
+          sound: sound || 'default',
         },
       ])
-      // console.log('success!')
-      // console.log(ticket)
       res.status(204).json()
     } catch (error) {
       next(error)
@@ -158,9 +159,8 @@ class UserController {
         num_id,
       } = req.body
 
-
       let user = req.user
-      if(!user)throw createError(404, 'User not found')
+      if (!user) throw createError(404, 'User not found')
 
       user.name = name || user.name
       user.email = email || user.email
