@@ -8,7 +8,7 @@ scoring.get('/', authenticate, async function(req, res, next) {
         let user = req.user
         const applications= await Application.find({user_id:user.id})
 	      	axios({
-				url: 'http://35.187.226.194',
+				url: 'http://35.187.226.194:3000',
 				method: 'POST',
 				data: {
 					amount: applications[0].amount,
