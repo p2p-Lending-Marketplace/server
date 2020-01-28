@@ -1,13 +1,11 @@
 const application = require('express').Router()
-const { ApplicationController } = require('../controllers')
+const { ApplicationController, UserController } = require('../controllers')
 const {
-  authenticate,
   authorizeApplicationUser,
   authorizeApplicationAdmin,
 } = require('../middlewares/auth')
 
-application.use('/', authenticate)
-application.post('/', authenticate, ApplicationController.createNewApplication)
+application.post('/', ApplicationController.createNewApplication)
 
 application.get(
   '/',
@@ -20,11 +18,7 @@ application.get(
   ApplicationController.getAllFintechApplications
 )
 // application.get('/user/:user_id', ApplicationController.getAllUserApplications)
-application.get(
-  '/user',
-  authenticate,
-  ApplicationController.getAllUserApplications
-)
+application.get('/user', ApplicationController.getAllUserApplications)
 
 application.patch(
   '/:id/decision',
@@ -42,5 +36,7 @@ application.get(
   authorizeApplicationUser,
   ApplicationController.getApplicationById
 )
+
+application.post('/sendpush', UserController.sendPushNotification)
 
 module.exports = application

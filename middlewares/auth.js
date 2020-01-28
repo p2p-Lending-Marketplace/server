@@ -5,6 +5,7 @@ const { verify } = require('jsonwebtoken')
 module.exports = {
   async authenticate(req, res, next) {
     try {
+      console.log(req.originalUrl)
       const { token } = req.headers
       const payload = verify(token, process.env.JWT_SECRET)
       // console.log('payload => ', payload)

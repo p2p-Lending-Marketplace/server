@@ -39,7 +39,28 @@ class ApplicationController {
       application.decision = decision || application.decision
 
       application = await application.save()
-      res.status(200).json(application)
+
+      application = await application
+        .populate('fintech_id', 'logoURL company_name')
+        .populate('user_id', '-pin')
+        .execPopulate()
+
+      console.log(application)
+
+      let obj = {
+        decision: application.decision,
+        status: application.status,
+        _id: application._id,
+        user_id: application.user_id,
+        fintech_id: application.fintech_id._id,
+        logoURL: application.fintech_id.logoURL,
+        company_name: application.fintech_id.company_name,
+        amount: application.amount,
+        loan_term: application.loan_term,
+        objective: application.objective,
+        createdAt: application.createdAt,
+      }
+      res.status(200).json(obj)
     } catch (error) {
       next(error)
     }
@@ -156,8 +177,7 @@ class ApplicationController {
         objective: application.objective,
         createdAt: application.createdAt,
       }
-      console.log('obj')
-      console.log(obj)
+
       res.status(200).json(obj)
     } catch (error) {
       next(error)
