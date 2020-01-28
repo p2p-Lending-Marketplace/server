@@ -5,6 +5,7 @@ const { verify } = require('jsonwebtoken')
 module.exports = {
   async authenticate(req, res, next) {
     try {
+      console.log('test')
       const { token } = req.headers
       const payload = verify(token, process.env.JWT_SECRET)
       if (payload.role === 'user') {
@@ -65,7 +66,7 @@ module.exports = {
   },
   async authorizeApplicationAdmin(req, res, next) {
     try {
-      if (req.admin) {
+      if (req.admin || req.fintech) {
         if (req.params.id) {
           const application = await Application.findById(req.params.id)
           if (!application) throw createError(404, 'application not found')

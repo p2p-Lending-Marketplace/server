@@ -4,6 +4,8 @@ class FintechController {
   static async addNewFintech(req, res, next) {
     try {
       const {
+        username,
+        password,
         company_name,
         description,
         min_interest,
@@ -14,6 +16,8 @@ class FintechController {
       } = req.body
 
       const fintech = await Fintech.create({
+        username,
+        password,
         company_name,
         description,
         min_interest,
@@ -31,6 +35,8 @@ class FintechController {
   static async updateFintechData(req, res, next) {
     try {
       const {
+        username,
+        password,
         company_name,
         description,
         min_interest,
@@ -41,6 +47,8 @@ class FintechController {
       } = req.body
       let fintech = req.fintech
 
+      fintech.username = username || fintech.username
+      fintech.password = password || fintech.password
       fintech.company_name = company_name || fintech.company_name
       fintech.description = description || fintech.description
       fintech.min_interest = min_interest || fintech.min_interest

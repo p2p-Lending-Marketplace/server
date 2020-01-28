@@ -15,7 +15,7 @@ application.get(
   ApplicationController.getAllApplications
 )
 application.get(
-  '/fintech/:fitech_id',
+  '/fintech/:fintech_id',
   authorizeApplicationAdmin,
   ApplicationController.getAllFintechApplications
 )

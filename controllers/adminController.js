@@ -9,36 +9,50 @@ class AdminController {
       const { username, password } = req.body
       const admin = await Admin.findOne({ username })
       const fintech = await Fintech.findOne({ username })
-      if (admin && (await compare(password, admin.password))) {
-        const token = sign(
-          {
-            _id: admin._id,
+      console.log(admin)
+      console.log(fintech)
+      if (admin) {
+        if (await compare(password, admin.password)) {
+          console.log('masuk')
+          const token = sign(
+            {
+              _id: admin._id,
+              role: 'admin',
+            },
+            process.env.JWT_SECRET
+          )
+          res.status(200).json({
+            ...admin._doc,
             role: 'admin',
-          },
-          process.env.JWT_SECRET
-        )
-        res.status(200).json({
-          ...admin._doc,
-          role: 'admin',
-          token,
-        })
-      } else if (fintech && (await compare(password, fintech.password))) {
+            token,
+          })
+        } else createError(422, 'Wrong username/password')
+      } else if (fintech) {
+        console.log('lewat')
         const token = sign(
           {
             _id: fintech._id,
             role: 'fintech',
-            fintech_id: admin.fintech_id || undefined,
+            fintech_id: fintech.fintech_id || undefined,
           },
           process.env.JWT_SECRET
         )
         res.status(200).json({
-          ...admin._doc,
+          ...fintech._doc,
           role: 'fintech',
           token,
         })
       } else throw createError(422, 'Wrong username/password')
     } catch (error) {
       next(error)
+    }
+  }
+
+  static async getCurrentAuth(req, res, next) {
+    if (req.admin) {
+      res.status(200).json({ ...req.admin._doc, role: 'admin' })
+    } else if (req.fintech) {
+      res.status(200).json({ ...req.fintech._doc, role: 'fintech' })
     }
   }
 
