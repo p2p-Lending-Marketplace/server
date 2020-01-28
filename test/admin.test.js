@@ -55,7 +55,7 @@ async function loginFintech() {
 		const { username, password } = newAdmin
 		const fintech = await Fintech.findOne({ username })
 
-        if (await compare(password, admin.password)) {
+        if (await compare(password, fintech.password)) {
         	const token = sign(
            		{
               		_id: fintech._id,
@@ -65,6 +65,7 @@ async function loginFintech() {
             	process.env.JWT_SECRET
           	)
           	jwtToken = token;
+            console.log('token => ',token);
         }
 	} catch (error) {
 		console.log('error => ',error);
@@ -74,6 +75,7 @@ async function loginFintech() {
 before(async function() {
     if (process.env.NODE_ENV === 'test') {
         await createNewFintech()
+        await loginFintech()
     }
 });
 
@@ -99,6 +101,38 @@ describe("Admin Route Testing", function() {
                     done()
                 });
 		})
+        it("should failed to register new admin if password not provided", function(done) {
+
+            let newWrongAdmin = {
+                username: 'admin'
+            }
+
+            chai
+                .request(app)
+                .post('/admin/register')
+                .send(newWrongAdmin)
+                .end(function (err, res) {
+                    // console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res).to.have.status(500);
+                    done()
+                });
+        })
+        it("should failed to register new admin if username not provided", function(done) {
+
+            let newWrongAdmin1 = {
+                password: 'admin'
+            }
+
+            chai
+                .request(app)
+                .post('/admin/register')
+                .send(newWrongAdmin1)
+                .end(function (err, res) {
+                    // console.log("res.body => ", JSON.stringify(res.body, null, 3))
+                    expect(res).to.have.status(422);
+                    done()
+                });
+        })
 	})
 	describe("POST /login", function() {
 		it("should succesfully login as admin", function(done) {
