@@ -7,7 +7,7 @@ const {
 } = require('../middlewares/auth')
 
 application.use('/', authenticate)
-application.post('/', ApplicationController.createNewApplication)
+application.post('/', authenticate, ApplicationController.createNewApplication)
 
 application.get(
   '/',
@@ -19,7 +19,12 @@ application.get(
   authorizeApplicationAdmin,
   ApplicationController.getAllFintechApplications
 )
-application.get('/user/:user_id', ApplicationController.getAllUserApplications)
+// application.get('/user/:user_id', ApplicationController.getAllUserApplications)
+application.get(
+  '/user',
+  authenticate,
+  ApplicationController.getAllUserApplications
+)
 
 application.patch(
   '/:id/decision',

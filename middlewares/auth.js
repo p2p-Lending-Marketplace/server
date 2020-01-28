@@ -7,7 +7,7 @@ module.exports = {
     try {
       const { token } = req.headers
       const payload = verify(token, process.env.JWT_SECRET)
-      console.log('payload => ',payload);
+      // console.log('payload => ', payload)
       if (payload.role === 'user') {
         const user = await User.findById(payload._id)
         req.user = user
@@ -56,7 +56,11 @@ module.exports = {
     try {
       const application = await Application.findById(req.params.id)
       if (!application) throw createError(404, 'application not found')
-      if (req.admin || (req.user && application.user_id == req.user.id)) {
+      if (
+        req.admin ||
+        (req.user && application.user_id == req.user.id) ||
+        (req.fintech && application.fintech_id == req.fintech.id)
+      ) {
         req.application = application
         next()
       } else createError(403, 'Access not granted')
