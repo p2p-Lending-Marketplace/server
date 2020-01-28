@@ -160,10 +160,7 @@ class UserController {
         num_id,
       } = req.body
 
-
       let user = req.user
-      if(!user)throw createError(404, 'User not found')
-
       if (!user) throw createError(404, 'User not found')
 
       user.name = name || user.name
