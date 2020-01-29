@@ -108,6 +108,8 @@ class ApplicationController {
       })
         .populate('fintech_id', '-username -password')
         .populate('user_id', '-pin')
+        
+      console.log(applications)
 
       res.status(200).json(applications)
     } catch (error) {

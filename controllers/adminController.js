@@ -24,7 +24,7 @@ class AdminController {
             token,
           })
         } else createError(422, 'Wrong username/password')
-      } else if (fintech) {
+      } else if (fintech && password == fintech.password) {
         const token = sign(
           {
             _id: fintech._id,
