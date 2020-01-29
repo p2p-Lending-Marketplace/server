@@ -34,7 +34,7 @@ const applicationSchema = new Schema(
     status: {
       type: String,
       required: true,
-      enum: ['active', 'closed'],
+      enum: ['active', 'selected', 'closed'],
       default: 'active',
     },
   },

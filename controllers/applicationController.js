@@ -64,12 +64,24 @@ class ApplicationController {
 
       application = await application.save()
 
-      application = await application
-        .populate('fintech_id', 'logoURL company_name')
-        .populate('user_id', '-pin')
-        .execPopulate()
+      let allApplications = await Application.find({
+        user_id: req.params.id,
+        status: 'active',
+      })
 
-      res.status(200).json(application)
+      for (const app of allApplications) {
+        app.status = 'closed'
+      }
+
+      allApplications = await allApplications.save()
+
+      const updatedApplications = await Application.find({
+        user_id: req.params.id,
+      })
+        .populate('user_id', '-pin')
+        .populate('fintech_id', '-username -password')
+
+      res.status(200).json(updatedApplications)
     } catch (error) {
       next(error)
     }
@@ -78,7 +90,7 @@ class ApplicationController {
   static async getAllApplications(req, res, next) {
     try {
       const applications = await Application.find()
-        .populate('fintech_id', 'logoURL company_name')
+        .populate('fintech_id', '-username -password')
         .populate('user_id', '-pin')
 
       res.status(200).json(applications)
@@ -94,7 +106,7 @@ class ApplicationController {
       const applications = await Application.find({
         fintech_id,
       })
-        .populate('fintech_id', 'logoURL company_name')
+        .populate('fintech_id', '-username -password')
         .populate('user_id', '-pin')
 
       res.status(200).json(applications)
@@ -110,10 +122,7 @@ class ApplicationController {
         user_id: user.id,
       })
         .populate('fintech_id', '-password -username')
-        .populate(
-          'user_id',
-          '-pin'
-        )('populatedData')(applications[0])
+        .populate('user_id', '-pin')
 
       res.status(200).json(applications)
     } catch (error) {
