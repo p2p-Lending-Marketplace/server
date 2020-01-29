@@ -9,11 +9,8 @@ class AdminController {
       const { username, password } = req.body
       const admin = await Admin.findOne({ username })
       const fintech = await Fintech.findOne({ username })
-      console.log(admin)
-      console.log(fintech)
       if (admin) {
         if (await compare(password, admin.password)) {
-          console.log('masuk')
           const token = sign(
             {
               _id: admin._id,
@@ -28,7 +25,6 @@ class AdminController {
           })
         } else createError(422, 'Wrong username/password')
       } else if (fintech) {
-        console.log('lewat')
         const token = sign(
           {
             _id: fintech._id,

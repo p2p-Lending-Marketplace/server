@@ -36,12 +36,10 @@ user.get('/scoring', authenticate, async function(req, res, next) {
         current_job: user.current_job,
         date_of_birth: user.date_of_birth,
       },
-    }).then(response => {
-      console.log(response)
-      res.status(200).send(response.data)
+    }).then(({ data }) => {
+      res.status(200).send(data)
     })
   } catch (error) {
-    console.log('hello error')
     next(error)
   }
 })
