@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test nyc mocha --exit",
+    "test": "NODE_ENV=test mocha --exit",
     "dev": "NODE_ENV=development npx nodemon bin/http.js",
-    "start": "NODE_ENV=production nodemon bin/http.js"
+    "start": "NODE_ENV=production npx nodemon bin/http.js"
   },
   "repository": {
     "type": "git",
