@@ -38,6 +38,7 @@ class UserController {
         throw createError(400, 'Invalid expo push token')
       const ticket = await expo.sendPushNotificationsAsync([
         {
+          data: { _id },
           to: user.push_token,
           title,
           body,

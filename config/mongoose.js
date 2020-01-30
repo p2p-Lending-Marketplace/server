@@ -1,5 +1,8 @@
 const mongoose = require('mongoose')
-const URI = process.env.URI || 'mongodb://localhost/p2p-lending-marketplace-dev'
+const URI =
+  process.env.NODE_ENV !== 'production'
+    ? `mongodb://localhost/p2p-lending-marketplace-${process.env.NODE_ENV}`
+    : process.env.URI
 
 mongoose
   .connect(URI, {

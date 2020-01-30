@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "NODE_ENV=test mocha --exit",
-    "dev": "NODE_ENV=development npx nodemon bin/http.js"
+    "test": "NODE_ENV=test nyc mocha --exit",
+    "dev": "NODE_ENV=development npx nodemon bin/http.js",
+    "start": "NODE_ENV=production nodemon bin/http.js"
   },
   "repository": {
     "type": "git",
@@ -38,6 +39,7 @@
     "dotenv": "^8.2.0",
     "mocha": "^7.0.0",
     "nodemon": "^2.0.2",
+    "nyc": "^15.0.0",
     "prettier": "1.19.1"
   }
 }
