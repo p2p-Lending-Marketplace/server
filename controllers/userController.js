@@ -36,9 +36,11 @@ class UserController {
       if (!user) throw createError(404, 'User not found')
       if (!Expo.isExpoPushToken(user.push_token))
         throw createError(400, 'Invalid expo push token')
+        console.log(user)
       const ticket = await expo.sendPushNotificationsAsync([
         {
           to: user.push_token,
+          data: { _id },          
           title,
           body,
           sound: sound || 'default',

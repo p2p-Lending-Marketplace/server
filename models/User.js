@@ -95,6 +95,18 @@ userSchema.pre('save', async function(next) {
 })
 
 userSchema.pre('save', function(next) {
+  console.log(this.num_id,
+    this.name,
+    this.place_of_birth,
+    this.date_of_birth,
+    this.email,
+    this.phone_number,
+    this.address,
+    this.photo_url,
+    this.id_url,
+    this.current_job,
+    this.salary,
+    this.salary_slip_url)
   if (
     this.num_id &&
     this.name &&
