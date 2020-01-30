@@ -87,6 +87,7 @@ const userSchema = new Schema({
   place_of_birth: String,
   data_completed: Boolean,
   push_token: String,
+  existing_loan_installment: Number,
 })
 
 userSchema.pre('save', async function(next) {
@@ -95,7 +96,8 @@ userSchema.pre('save', async function(next) {
 })
 
 userSchema.pre('save', function(next) {
-  console.log(this.num_id,
+  console.log(
+    this.num_id,
     this.name,
     this.place_of_birth,
     this.date_of_birth,
@@ -106,7 +108,8 @@ userSchema.pre('save', function(next) {
     this.id_url,
     this.current_job,
     this.salary,
-    this.salary_slip_url)
+    this.salary_slip_url
+  )
   if (
     this.num_id &&
     this.name &&

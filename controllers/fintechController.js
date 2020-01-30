@@ -11,6 +11,9 @@ class FintechController {
         min_interest,
         max_interest,
         logoURL,
+        total_application,
+        avg_credit_score,
+        percent_acceptance,
       } = req.body
 
       const fintech = await Fintech.create({
@@ -21,6 +24,9 @@ class FintechController {
         min_interest,
         max_interest,
         logoURL,
+        total_application,
+        avg_credit_score,
+        percent_acceptance,
       })
       res.status(201).json(fintech)
     } catch (error) {
@@ -38,6 +44,9 @@ class FintechController {
         min_interest,
         max_interest,
         logoURL,
+        total_application,
+        avg_credit_score,
+        percent_acceptance,
       } = req.body
       let fintech = req.fintech
 
@@ -48,6 +57,10 @@ class FintechController {
       fintech.min_interest = min_interest || fintech.min_interest
       fintech.max_interest = max_interest || fintech.max_interest
       fintech.logoURL = logoURL || fintech.logoURL
+      fintech.total_application = total_application || fintech.total_application
+      fintech.avg_credit_score = avg_credit_score || fintech.avg_credit_score
+      fintech.percent_acceptance =
+        percent_acceptance || fintech.percent_acceptance
 
       fintech = await fintech.save()
       res.status(200).json(fintech)
