@@ -18,14 +18,13 @@ user.post('/verify', UserController.verifyOTP)
 user.post('/signin', UserController.signInUser)
 // user.post('/signadmin', UserController.signInAdmin)
 
-user.get('/:id', authenticate, UserController.getUserById)
 user.get('/detail', authenticate, UserController.getUserById)
 user.patch('/', authenticate, UserController.updateUserDetail)
 
 user.get('/scoring', authenticate, async function(req, res, next) {
   try {
     let user = req.user
-    const applications = await Application.find({ user_id: user.id })
+    const applications = await Application.find({ user_id: user._id })
     axios({
       url: 'http://35.187.226.194',
       method: 'POST',
@@ -43,5 +42,7 @@ user.get('/scoring', authenticate, async function(req, res, next) {
     next(error)
   }
 })
+
+user.get('/:id', authenticate, UserController.getUserById)
 
 module.exports = user

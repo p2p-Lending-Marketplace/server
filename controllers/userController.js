@@ -212,7 +212,9 @@ class UserController {
   static async getUserById(req, res, next) {
     try {
       let user = req.user
-      if (req.params.id) user = await User.findById(req.params.id)
+      if (!user || req.params.id) {
+        user = await User.findById(req.params.id)
+      }
       res.status(200).json(user)
     } catch (error) {
       next(error)
