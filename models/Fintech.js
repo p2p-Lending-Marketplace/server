@@ -43,7 +43,10 @@ const fintechSchema = new Schema({
     ],
   },
   total_application: Number,
-  avg_credit_score: String,
+  avg_credit_score: {
+    type: String,
+    enum: ['A', 'B', 'C', 'D'],
+  },
   percent_acceptance: Number,
   username: {
     type: String,
