@@ -29,8 +29,8 @@ user.get('/scoring', authenticate, async function(req, res, next) {
       url: 'http://35.187.226.194',
       method: 'POST',
       data: {
-        amount: applications[0].amount,
-        loan_term: applications[0].loan_term,
+        amount: 0,
+        loan_term: 0,
         salary: user.salary,
         current_job: user.current_job,
         date_of_birth: user.date_of_birth,
