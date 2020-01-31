@@ -59,24 +59,28 @@ class ApplicationController {
     try {
       const { status } = req.body
       let application = req.application
+      const user = req.user
 
       application.status = status || application.status
 
       application = await application.save()
 
       let allApplications = await Application.find({
-        user_id: req.params.id,
+        user_id: user.id,
         status: 'active',
       })
 
       for (const app of allApplications) {
         app.status = 'closed'
       }
+      console.log(allApplications[0])
 
-      allApplications = await allApplications.save()
+      allApplications = await Promise.all(
+        allApplications.map(application => application.save())
+      )
 
       const updatedApplications = await Application.find({
-        user_id: req.params.id,
+        user_id: user.id,
       })
         .populate('user_id', '-pin')
         .populate('fintech_id', '-username -password')
@@ -108,7 +112,7 @@ class ApplicationController {
       })
         .populate('fintech_id', '-username -password')
         .populate('user_id', '-pin')
-        
+
       console.log(applications)
 
       res.status(200).json(applications)
