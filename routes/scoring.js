@@ -16,6 +16,7 @@ scoring.get('/', authenticate, async function(req, res, next) {
         salary: user.salary,
         current_job: user.current_job,
         date_of_birth: user.date_of_birth,
+        existing_loan_installment: user.existing_loan_installment
       },
     }).then(({ data }) => {
       res.status(200).send(data)
